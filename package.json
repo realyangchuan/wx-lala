@@ -1,0 +1,11 @@
+{
+  "name": "@realyangchuan/wx-fetch",
+  "version": "1.0.0",
+  "description": "wx.request, wx.cloud.callFunction, wx.cloud.callContainer Promisify and interceptors",
+  "keywords": ["weixin", "request", "callFunction", "callContainer"],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yang Chuan",
+  "license": "ISC"
+}
