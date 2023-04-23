@@ -201,7 +201,7 @@ function cloudInit(options) {
  * function: { env: 'test-xxx', ...wx.cloud.callFunction options }
  * container: { env: 'test-xxx', ...wx.cloud.callContainer options }
  */
-export function createRequest(defaultOptions = {}) {
+function createRequest(defaultOptions = {}) {
   const wxCloud = cloudInit(defaultOptions)
 
   return {

@@ -8,7 +8,7 @@ export default {
   output: [
     {
       file: 'miniprogram_dist/index.js',
-      format: 'es',
+      format: 'cjs',
       plugins: [terser()]
     }
   ]
