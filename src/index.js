@@ -80,13 +80,12 @@ function mergeOptions(target, source) {
         continue
       }
 
-      const path = reqUrl.slice(
-        Array.prototype.findIndex.call(reqUrl, c => /\w/.test(c))
-      )
+      const i = Array.prototype.findIndex.call(reqUrl, c => /\w/.test(c))
+      const path = i === -1 ? '' : reqUrl.slice(i)
       if (baseURL.endsWith('/')) {
         res['url'] = baseURL + path
       } else {
-        res['url'] = baseURL + '/' + path
+        res['url'] = path ? baseURL + '/' + path : baseURL
       }
 
       continue
