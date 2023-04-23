@@ -2,10 +2,22 @@
   "name": "@realyangchuan/wx-fetch",
   "version": "1.0.0",
   "description": "wx.request, wx.cloud.callFunction, wx.cloud.callContainer Promisify and interceptors",
-  "keywords": ["weixin", "request", "callFunction", "callContainer"],
+  "keywords": [
+    "weixin",
+    "request",
+    "callFunction",
+    "callContainer"
+  ],
+  "main": "./miniprogram_dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c"
   },
   "author": "Yang Chuan",
-  "license": "ISC"
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.1",
+    "rollup": "^3.20.7"
+  }
 }
