@@ -22,8 +22,10 @@
   "author": "Yang Chuan",
   "license": "ISC",
   "type": "module",
+  "types": "./types/index.d.ts",
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.1",
+    "miniprogram-api-typings": "^3.9.1",
     "rollup": "^3.20.7"
   }
 }
