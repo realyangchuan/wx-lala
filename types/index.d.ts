@@ -39,17 +39,25 @@ interface DefaultOptions {
 
 type CreateRequest = {
   (defaultOptions: DefaultOptions): {
-    /**
-     * 参数中不要带success，在promise中处理返回值
-     */
     request: {
+      /**
+       * 参数中带有success/fail，会先调用success/fail，返回值的promise
+       */
       <
         T extends string | WechatMiniprogram.IAnyObject | ArrayBuffer =
           | string
           | WechatMiniprogram.IAnyObject
           | ArrayBuffer
       >(
-          option: Omit<WechatMiniprogram.RequestOption<T>, 'success'>
+          option: OQ<WechatMiniprogram.RequestOption<T>>
+      ): Promise<any>
+      <
+        T extends string | WechatMiniprogram.IAnyObject | ArrayBuffer =
+          | string
+          | WechatMiniprogram.IAnyObject
+          | ArrayBuffer
+      >(
+          option: RQ<WechatMiniprogram.RequestOption<T>>
       ): Promise<WechatMiniprogram.RequestSuccessCallbackResult<T>>
       interceptor: Interceptor<WechatMiniprogram.RequestOption, WechatMiniprogram.RequestSuccessCallbackResult, WechatMiniprogram.Err>
     }
@@ -57,7 +65,7 @@ type CreateRequest = {
       /**
        * 参数中带有success/fail，会先调用success/fail，返回值的promise
        */
-      // <T = any>(param: OQ<ICloud.CallFunctionParam>): Promise<T>
+      <T = any>(param: OQ<ICloud.CallFunctionParam>): Promise<T>
       (param: RQ<ICloud.CallFunctionParam>): Promise<ICloud.CallFunctionResult>
       interceptor: Interceptor<RQ<ICloud.CallFunctionParam>, ICloud.CallFunctionResult, ICloud.CallFunctionResult>
     }
@@ -65,7 +73,7 @@ type CreateRequest = {
       /**
        * 参数中带有success/fail，会先调用success/fail，返回值的promise
        */
-      // <T = any>(param: OQ<ICloud.CallContainerParam>): Promise<T>
+      <T = any>(param: OQ<ICloud.CallContainerParam>): Promise<T>
       (param: RQ<ICloud.CallContainerParam>): Promise<ICloud.CallContainerResult>
       interceptor: Interceptor<RQ<ICloud.CallContainerParam>, ICloud.CallContainerResult, ICloud.CallContainerResult>
     }
