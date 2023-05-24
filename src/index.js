@@ -132,14 +132,14 @@ function handleWechatApi(wechatApi, options) {
   return new Promise((resolve, reject) => {
     wechatApi({
       ...options,
-      success(res) {
-        resolve(options.success?.(res) ?? res)
+      async success(res) {
+        resolve(await options.success?.(res) ?? res)
       },
-      fail(err) {
-        reject(options.fail?.(err) ?? err)
+      async fail(err) {
+        reject(await options.fail?.(err) ?? err)
       },
-      complete() {
-        options.complete?.()
+      async complete() {
+        await options.complete?.()
       }
     })
   })
