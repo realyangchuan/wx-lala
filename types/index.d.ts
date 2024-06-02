@@ -6,12 +6,12 @@ interface HandleInterceptor {
 
 interface Interceptor<Req, Res, ResErr> {
   request: {
-    use: (handler: (options: Req) => Req | void) => void
+    use: (handler: (options?: Req) => Req | void) => void
   } & HandleInterceptor
   response: {
     use: (
-      handler: (response: Res, requestOptions: Req) => Res | void,
-      errHandler: (error: ResErr, requestOptions: Req) => ResErr | void
+      handler: (response?: Res, requestOptions?: Req) => Res | void,
+      errHandler?: (error?: ResErr, requestOptions?: Req) => ResErr | void
     ) => void
   } & HandleInterceptor
 }
