@@ -51,7 +51,7 @@ type CreateRequest = {
       >(
         option: WechatMiniprogram.RequestOption<T>
       ): Promise<WechatMiniprogram.RequestSuccessCallbackResult<T>>
-      interceptor: Interceptor<
+      interceptors: Interceptor<
         WechatMiniprogram.RequestOption,
         WechatMiniprogram.RequestSuccessCallbackResult,
         WechatMiniprogram.RequestFailCallbackErr
@@ -63,7 +63,7 @@ type CreateRequest = {
        */
       <T = any>(param: OQ<ICloud.CallFunctionParam>): Promise<T>
       (param: RQ<ICloud.CallFunctionParam>): Promise<ICloud.CallFunctionResult>
-      interceptor: Interceptor<
+      interceptors: Interceptor<
         RQ<ICloud.CallFunctionParam>,
         ICloud.CallFunctionResult,
         ICloud.CallFunctionResult
@@ -77,7 +77,7 @@ type CreateRequest = {
       (
         param: RQ<ICloud.CallContainerParam>
       ): Promise<ICloud.CallContainerResult>
-      interceptor: Interceptor<
+      interceptors: Interceptor<
         RQ<ICloud.CallContainerParam>,
         ICloud.CallContainerResult,
         ICloud.CallContainerResult
