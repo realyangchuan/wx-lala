@@ -1,6 +1,6 @@
 function handleTimeout(timeout) {
   return new Promise((_, reject) => {
-    setTimeout(() => reject('timeout'), timeout)
+    setTimeout(() => reject(new Error('timeout')), timeout)
   })
 }
 
@@ -28,7 +28,7 @@ function handleInterceptor(interceptor) {
     },
     cancel() {
       if (_reject) {
-        _reject?.('canceled')
+        _reject?.(new Error('canceled'))
         _reset()
       }
     }
@@ -107,22 +107,28 @@ function createInstance(defaultOptions, makeRequest) {
   function _request(options) {
     const interceptors = _request.interceptors
     return new Promise((resolve, reject) => {
-      const originConfig = mergeOptions(options, defaultOptions)
-      let config = interceptors.request.handler?.(originConfig)
-
       enqueueIfLocked(interceptors.request.p, async () => {
-        config = (await Promise.resolve(config)) ?? originConfig
+        const originConfig = mergeOptions(options, defaultOptions)
+        const config =
+          (await Promise.resolve(
+            interceptors.request.handler?.(originConfig)
+          )) ?? originConfig
         makeRequest(config)
-          .then(async response => {
-            const res =
-              (await interceptors.response.handler?.(response, config)) ??
-              response
-            enqueueIfLocked(interceptors.response.p, () => resolve(res))
+          .then(response => {
+            enqueueIfLocked(interceptors.response.p, async () => {
+              const res =
+                (await interceptors.response.handler?.(response, config)) ??
+                response
+              resolve(res)
+            })
           })
-          .catch(async error => {
-            const err =
-              (await interceptors.response.errHandler?.(error, config)) ?? error
-            enqueueIfLocked(interceptors.response.p, () => reject(err))
+          .catch(error => {
+            enqueueIfLocked(interceptors.response.p, async () => {
+              const err =
+                (await interceptors.response.errHandler?.(error, config)) ??
+                error
+              reject(err)
+            })
           })
       })
     })
