@@ -10,8 +10,8 @@ interface Interceptor<Req, Res, ResErr> {
   } & HandleInterceptor
   response: {
     use: (
-      handler: (response?: Res, requestOptions?: Req) => Res | void,
-      errHandler?: (error?: ResErr, requestOptions?: Req) => ResErr | void
+      handler: (response?: Res, requestOptions?: Req) => Any | void,
+      errHandler?: (error?: ResErr, requestOptions?: Req) => Any | void
     ) => void
   } & HandleInterceptor
 }
@@ -50,7 +50,7 @@ type CreateRequest = {
           | ArrayBuffer
       >(
         option: WechatMiniprogram.RequestOption<T>
-      ): Promise<WechatMiniprogram.RequestSuccessCallbackResult<T>>
+      ): Promise<Any>
       interceptors: Interceptor<
         WechatMiniprogram.RequestOption,
         WechatMiniprogram.RequestSuccessCallbackResult,
