@@ -6,24 +6,26 @@ interface HandleInterceptor {
 
 interface Interceptor<Req, Res, ResErr> {
   request: {
-    use: (handler: (options?: Req) => Req | void) => void
+    use: (handler: (options: Req) => Req | void | Promise<Req | void>) => void
   } & HandleInterceptor
   response: {
     use: (
-      handler: (response?: Res, requestOptions?: Req) => Any | void,
-      errHandler?: (error?: ResErr, requestOptions?: Req) => Any | void
+      handler: (response: Res, requestOptions: Req) => any,
+      errHandler?: (error: ResErr, requestOptions: Req) => any
     ) => void
   } & HandleInterceptor
 }
 
-interface DefaultOptions {
+type WxResType = string | WechatMiniprogram.IAnyObject | ArrayBuffer
+
+interface DefaultOptions<T extends WxResType = WxResType> {
   /** 云开发/云托管调用之前默认初始化环境ID, 也可以在function/container内部再各自独立初始化定义 */
   env?: string
   /**
    * 新增baseURL选项，一般填接口域名前缀。后续实际调用时的url以/^https?/开头时，则不用这个默认值
    * 其他选项跟wx.request选项一样，可参考官网文档https://developers.weixin.qq.com/miniprogram/dev/api/network/request/wx.request.html
    */
-  request?: { baseURL?: string } & Omit<WechatMiniprogram.RequestOption, 'url'>
+  request?: { baseURL?: string } & Omit<WechatMiniprogram.RequestOption<T>, 'url'>
   /**
    * 可传入wx.cloud.callFunction参数中任何值作为默认参数，其中config.env用env代替
    */
@@ -38,24 +40,23 @@ interface DefaultOptions {
 }
 
 type CreateRequest = {
-  (defaultOptions: DefaultOptions): {
+  <T extends WxResType = WxResType>(defaultOptions: DefaultOptions<T>): {
     request: {
       /**
        * 参数中带有success/fail，会先调用success/fail，返回值的promise
        */
-      <
-        T extends string | WechatMiniprogram.IAnyObject | ArrayBuffer =
-          | string
-          | WechatMiniprogram.IAnyObject
-          | ArrayBuffer
-      >(
-        option: WechatMiniprogram.RequestOption<T>
-      ): Promise<Any>
-      interceptors: Interceptor<
-        WechatMiniprogram.RequestOption,
-        WechatMiniprogram.RequestSuccessCallbackResult,
-        WechatMiniprogram.RequestFailCallbackErr
-      >
+      <R extends T = T>(option: WechatMiniprogram.RequestOption<R>): Promise<WechatMiniprogram.RequestSuccessCallbackResult<R>>
+      interceptors: {
+        request: {
+          use: (handler: <R extends T = T>(options: WechatMiniprogram.RequestOption<R>) => WechatMiniprogram.RequestOption<R> | void | Promise<WechatMiniprogram.RequestOption<R> | void>) => void
+        } & HandleInterceptor
+        response: {
+          use: (
+            handler: <R extends T = T>(response: WechatMiniprogram.RequestSuccessCallbackResult<R>, requestOptions: WechatMiniprogram.RequestOption<R>) => any | void,
+            errHandler?: <R extends T = T>(error: WechatMiniprogram.RequestFailCallbackErr, requestOptions: WechatMiniprogram.RequestOption<R>) => any | void
+          ) => void
+        } & HandleInterceptor
+      }
     }
     callFunction: {
       /**

@@ -117,16 +117,18 @@ function createInstance(defaultOptions, makeRequest) {
           .then(response => {
             enqueueIfLocked(interceptors.response.p, async () => {
               const res =
-                (await interceptors.response.handler?.(response, config)) ??
-                response
+                (await Promise.resolve(
+                  interceptors.response.handler?.(response, config)
+                )) ?? response
               resolve(res)
             })
           })
           .catch(error => {
             enqueueIfLocked(interceptors.response.p, async () => {
               const err =
-                (await interceptors.response.errHandler?.(error, config)) ??
-                error
+                (await Promise.resolve(
+                  interceptors.response.errHandler?.(error, config)
+                )) ?? error
               reject(err)
             })
           })
