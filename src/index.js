@@ -22,13 +22,13 @@ function handleInterceptor(interceptor) {
     },
     unlock() {
       if (_resolve) {
-        _resolve?.()
+        _resolve()
         _reset()
       }
     },
     cancel() {
       if (_reject) {
-        _reject?.(new Error('canceled'))
+        _reject(new Error('canceled'))
         _reset()
       }
     }

@@ -43,9 +43,10 @@ type CreateRequest = {
   <T extends WxResType = WxResType>(defaultOptions: DefaultOptions<T>): {
     request: {
       /**
-       * 参数中带有success/fail，会先调用success/fail，返回值的promise
+       * 参数中带有success/fail，会先调用success/fail，返回值的promise;
+       * TODO: 这里的返回值应该是响应拦截器的返回值，如果没有响应拦截器或者拦截器返回null | undefined，则返回接口返回的原始响应
        */
-      <R extends T = T>(option: WechatMiniprogram.RequestOption<R>): Promise<WechatMiniprogram.RequestSuccessCallbackResult<R>>
+      <R extends T = T>(option: WechatMiniprogram.RequestOption<R>): Promise<any>
       interceptors: {
         request: {
           use: (handler: <R extends T = T>(options: WechatMiniprogram.RequestOption<R>) => WechatMiniprogram.RequestOption<R> | void | Promise<WechatMiniprogram.RequestOption<R> | void>) => void
