@@ -1,6 +1,6 @@
 {
   "name": "wx-lala",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "wx.request, wx.cloud.callFunction, wx.cloud.callContainer Promisify and interceptors",
   "keywords": [
     "wechat",
