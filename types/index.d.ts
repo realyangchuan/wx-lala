@@ -16,9 +16,7 @@ interface Interceptor<Req, Res, ResErr> {
   } & HandleInterceptor
 }
 
-type WxResType = string | WechatMiniprogram.IAnyObject | ArrayBuffer
-
-interface DefaultOptions<T extends WxResType = WxResType> {
+interface DefaultOptions<T extends string | WechatMiniprogram.IAnyObject | ArrayBuffer = string | WechatMiniprogram.IAnyObject | ArrayBuffer> {
   /** 云开发/云托管调用之前默认初始化环境ID, 也可以在function/container内部再各自独立初始化定义 */
   env?: string
   /**
@@ -39,22 +37,25 @@ interface DefaultOptions<T extends WxResType = WxResType> {
   container?: { env?: string } & Omit<OQ<ICloud.CallContainerParam>, 'config'>
 }
 
-type CreateRequest = {
-  <T extends WxResType = WxResType>(defaultOptions: DefaultOptions<T>): {
+interface CreateRequest {
+  <T extends string | WechatMiniprogram.IAnyObject | ArrayBuffer = string | WechatMiniprogram.IAnyObject | ArrayBuffer>(defaultOptions: DefaultOptions<T>): {
     request: {
       /**
        * 参数中带有success/fail，会先调用success/fail，返回值的promise;
-       * TODO: 这里的返回值应该是响应拦截器的返回值，如果没有响应拦截器或者拦截器返回null | undefined，则返回接口返回的原始响应
+       * 这里的返回值应该是响应拦截器的返回值，如果没有响应拦截器或者拦截器返回null | undefined，则返回接口返回的原始响应
        */
-      <R extends T = T>(option: WechatMiniprogram.RequestOption<R>): Promise<any>
+      <R extends T = T, Res = WechatMiniprogram.RequestSuccessCallbackResult<R>>(option: WechatMiniprogram.RequestOption<R>): Promise<Res>
       interceptors: {
         request: {
-          use: (handler: <R extends T = T>(options: WechatMiniprogram.RequestOption<R>) => WechatMiniprogram.RequestOption<R> | void | Promise<WechatMiniprogram.RequestOption<R> | void>) => void
+          use: (handler: (options: WechatMiniprogram.RequestOption<T>) => WechatMiniprogram.RequestOption<T> | void | Promise<WechatMiniprogram.RequestOption<T> | void>) => void
         } & HandleInterceptor
         response: {
-          use: (
-            handler: <R extends T = T>(response: WechatMiniprogram.RequestSuccessCallbackResult<R>, requestOptions: WechatMiniprogram.RequestOption<R>) => any | void,
-            errHandler?: <R extends T = T>(error: WechatMiniprogram.RequestFailCallbackErr, requestOptions: WechatMiniprogram.RequestOption<R>) => any | void
+          /**
+           * 响应拦截器：其返回值会作为请求成功回调的返回值。如果未返回或返回null | undefined, 则返回接口的原始响应
+           */
+          use: <R extends T = T, Res = WechatMiniprogram.RequestSuccessCallbackResult<R>>(
+            handler: (response: WechatMiniprogram.RequestSuccessCallbackResult<R>, requestOptions: WechatMiniprogram.RequestOption<R>) => Res | Promise<Res>,
+            errHandler?: (error: WechatMiniprogram.RequestFailCallbackErr, requestOptions: WechatMiniprogram.RequestOption<R>) => any
           ) => void
         } & HandleInterceptor
       }
